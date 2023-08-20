@@ -1,6 +1,4 @@
-import path from "path";
-console.log(path.resolve());
-const baseUrl = process.env.REACT_APP_BACKEND_URL;
+const baseUrl = 'http://localhost:5000/';
 
 
 export async function getData(date: string) {

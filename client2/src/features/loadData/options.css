@@ -1,0 +1,19 @@
+#options {
+    position: absolute;
+    max-width: 50%;
+    right: 10px;
+}
+
+#options label {
+    margin: 0;
+}
+
+.load-data {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.load-data label {
+    text-align: left;
+}

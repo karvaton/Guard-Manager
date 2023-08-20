@@ -1,20 +1,24 @@
 {
   "name": "client",
   "version": "0.1.0",
-  "main": "public/electron.js",
   "private": true,
+  "main": "build/electron/main.js",
   "dependencies": {
-    "@reduxjs/toolkit": "^1.9.5",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^14.4.3",
+    "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
-    "@types/react": "^18.2.19",
+    "@types/node": "^16.18.40",
+    "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
+    "docxtemplater": "^3.37.13",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "pizzip": "^3.1.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-redux": "^8.1.2",
     "react-scripts": "5.0.1",
+    "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -22,9 +26,21 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "dev": "concurrently -k \"BROWSER=none npm start\" \"npm:electron\"",
-    "electron": "wait-on tcp:3000 && electron .",
-    "app": "electron ."
+    "web:dev": "concurrently \"cross-env REACT_APP_MODE=web npx craco start\" \"npm run server:dev\"",
+    "electron:dev": "concurrently \"cross-env BROWSER=none npx craco start\" \"wait-on http://127.0.0.1:3000 && tsc -p electron -w\" \"wait-on http://127.0.0.1:3000 && tsc -p electron && electron .\"",
+    "electron:build": "npm run build && tsc -p electron && electron-builder",
+    "server:dev": "nodemon",
+    "server:build": "tsc -p server -w",
+    "server": "node server/build/index.js"
+  },
+  "build": {
+    "extends": null,
+    "files": [
+      "build/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    }
   },
   "eslintConfig": {
     "extends": [
@@ -45,13 +61,18 @@
     ]
   },
   "devDependencies": {
-    "@types/node": "^20.5.0",
+    "@types/express": "^4.17.17",
     "concurrently": "^8.2.0",
+    "craco": "^0.0.3",
     "cross-env": "^7.0.3",
     "electron": "^26.0.0",
+    "electron-builder": "^24.6.3",
     "electron-is-dev": "^2.0.0",
+    "fs": "^0.0.1-security",
+    "nodemon": "^3.0.1",
+    "path": "^0.12.7",
+    "react-error-overlay": "^6.0.9",
     "ts-node": "^10.9.1",
-    "typescript": "^4.9.5",
     "wait-on": "^7.0.1"
   }
 }

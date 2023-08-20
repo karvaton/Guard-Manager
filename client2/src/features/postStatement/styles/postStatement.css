@@ -1,0 +1,41 @@
+.post-statement ul {
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    list-style-type: none;
+}
+
+.post-statement ul li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin: 4px 0;
+}
+
+.post-statement ul li > p {
+    flex: 1;
+    text-align: left;
+    margin: 0;
+}
+
+div.guardian_field {
+    width: 200px;
+    display: flex;
+}
+
+div.guardian_field input {
+    padding: 10px;
+    font-size: 12pt;
+}
+
+.post-statement > button {
+    width: 100px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+select.veapon {
+    margin-left: 5px;
+}

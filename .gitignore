@@ -1,7 +1,9 @@
 # production
 */build
+*/dist
 .env.development
 .env.production
+.env
 node_modules
 
 # !!! CLIENT !!!
