@@ -19,18 +19,29 @@ class Controller {
         const data: string[] = req.body;
         
         try {
-            const result = await service.save(date, data);
-            const readStream = new stream.PassThrough();
-            
-            readStream.end(result);
-            res.writeHead(200, {
-                "Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                "Content-disposition": `attachment; filename=raport.docx`,
-            });
-            readStream.pipe(res);
+            await service.save(date, data);
+            res.status(200).send();
         } catch (err) {
-            res.status(200).send(err);
+            res.status(500).send(err);
         }
+    }
+
+    async getReport(req: Request, res: Response) {
+        const date = req.query.date as string;
+        const result = await service.getReport(date);
+        const readStream = new stream.PassThrough();
+        
+        readStream.end(result);
+        res.writeHead(200, {
+            "Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "Content-disposition": `attachment; filename=raport.docx`,
+        });
+        readStream.pipe(res);
+    }
+
+    async getTemplates(req: Request, res: Response) {
+        const files = await service.getTemplates();
+        res.status(200).json(files);
     }
 }
 

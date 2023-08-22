@@ -1,31 +1,17 @@
-import path from "path";
-console.log(path.resolve());
-const baseUrl = process.env.REACT_APP_BACKEND_URL;
+import * as api from './api/api.server';
 
+const MODE = process.env.REACT_APP_MODE;
 
-export async function getData(date: string) {
-    const response = await fetch(`${baseUrl}?date=${date.replaceAll('-', '')}`);
-    const data: string[] = await response.json();
-    return data;
+// interface IApi {
+//     getData: (date: string) => Promise<string[]>
+//     save: (date: string, data: string[]) => Promise<void>
+// }
+
+let Api = api;
+
+if (MODE !== 'web') {
+    // const { getData, save } = require('../../server/service');
+    // Api = { getData, save };
 }
 
-export async function save(date: string, squad: string[]) {
-    const result = await fetch(`${baseUrl}?date=${date.replaceAll('-', '')}`, {
-        method: 'POST',
-        body: JSON.stringify(squad),
-        headers: {
-            "Content-Type": "application/json;charset=utf-8",
-        },
-    });
-    const blob = await result.blob();
-    saveAS(blob);
-}
-
-function saveAS(data: Blob) {
-    var csvURL = window.URL.createObjectURL(data);
-    let tempLink = document.createElement('a');
-    tempLink.style.display = 'none';
-    tempLink.href = csvURL;
-    tempLink.setAttribute('download', 'filename.docx');
-    tempLink.click();
-}
+export default Api;

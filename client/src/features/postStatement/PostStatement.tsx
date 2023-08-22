@@ -4,9 +4,9 @@ import './styles/header.css';
 import './styles/dialogs.css';
 import Guardian from './Guardian';
 import Post from './Post';
-import * as api from './api';
+import api from './api';
 import Modal from '../modal/Modal';
-import Options from '../loadData/Options';
+import Options from '../options/Options';
 
 
 const today = new Date().toISOString().substring(0, 10);
@@ -15,8 +15,9 @@ function PostStatement() {
     const [squad, setSquad] = useState(Array(22).fill(''));
     const [id, setId] = useState<number>(0);
     const [date, setDate] = useState<string>(today);
-    const [isExist, setIsExist] = useState<boolean>(false);
     const [saving, setSaving] = useState<boolean>(false);
+    const [saved, setSaved] = useState<string>('');
+    const [choosingTemplate, setCchoosingTemplate] = useState<boolean>(false);
 
     function setMember(index: number) {
         return function (newValue: string) {
@@ -24,22 +25,16 @@ function PostStatement() {
             setSquad(list);
         }
     }
-
-    function save() {
-        api.save(date, [id, ...squad]);
-    }
     
     const leaders = squad.slice(0, 4);
     const guards = squad.slice(4);
     const guardPosts: string[][] = shifted(guards);
     
     return (
-        <div className="post-statement">
+        <div className='post-statement'>
             <div className="header">
                 <div>
-                    <label htmlFor='post-statement-id'>
-                        N
-                    </label>
+                    <label htmlFor='post-statement-id'>N</label>
                     <button onClick={() => setId(id - 10)}>-10</button>
                         <input
                             type="text"
@@ -62,12 +57,23 @@ function PostStatement() {
                 </div>
 
                 <Options 
-                    onLoad={({id, squad, isExist, date: optionDate}: {id: number, squad: string[], isExist: boolean, date: string}) => {
+                    onLoad={({id, squad, date: optionDate}: {id: number, squad: string[], isExist: boolean, date: string}) => {
                         const daysPast = (new Date(date).getTime() - new Date(optionDate).getTime())/(3600*24*1000);
                         setId(id + daysPast*5);
                         setSquad(squad);
-                        setIsExist(isExist);
+                        setSaved(date+id+JSON.stringify(squad));
                     }}
+                    onShift={() => {
+                        const updated = shiftDown(guardPosts).flat();
+                        setSquad([...leaders, ...updated]);
+                        setSaved('');
+                    }}
+                    onClear={() => {
+                        setId(0);
+                        setSquad(Array(22).fill(''));
+                        setDate(new Date().toISOString().substring(0, 10))
+                    }}
+
                 />
             </div>
             <ul className="leaders">
@@ -91,27 +97,36 @@ function PostStatement() {
                 ))}
             </ul>
             
-            <button 
-                onClick={() => {
-                    if (isExist) {
+            {!saved || saved !== date+id+JSON.stringify(squad) ? (
+                <button 
+                    onClick={() => {
                         setSaving(true);
-                    } else {
-                        save();
+                    }}
+                    disabled={
+                        saved === date+id+JSON.stringify(squad) || 
+                        squad.findIndex(item => item.match(/\d-$/) || !item) > -1
                     }
-                }}
-                disabled={squad.findIndex(item => item.match(/\d-$/) || !item) > -1}
-                id='ready'
-            >
-                Готово
-            </button>
+                    id='save'
+                >
+                    Зберегти
+                </button>
+            ) : (
+                <button 
+                    onClick={() => api.getReport(date)}
+                    id='generate'
+                >
+                    Згенерувати відомість
+                </button>
+            )}
             {saving ? (
                 <Modal>
                     <div className="save-dialog">
-                        <p>Ви впевнені, що хочете внести зміни на дату {date}?</p>
+                        <p>Ви впевнені, що хочете зберегти зміни на {date}?</p>
                         <div className='buttons'>
                             <button className="yes" onClick={() => {
                                 setSaving(false);
-                                save();
+                                api.save(date, [id, ...squad])
+                                setSaved(date+id+JSON.stringify(squad));
                             }}>Так</button>
                             <button className="no" onClick={() => setSaving(false)}>Ні</button>
                         </div>
@@ -153,6 +168,15 @@ function shifted(arr: string[]): string[][] {
         }
     }
     return guardPosts;
+}
+
+
+function shiftDown(arr: string[][]): string[][] {
+    return arr.map(items => {
+        const last = items.at(-1) as string;
+        const rest = items.slice(0, -1);
+        return [last, ...rest];
+    });
 }
 
 export default PostStatement;

@@ -5,7 +5,7 @@ export const APP_PATH = process.cwd();
 
 async function start() {
     app.listen(port, () => {
-        console.log(`Server started on http://localhost:${port}/`);
+        console.log(`Server is running on http://localhost:${port}/`);
     });
 }
 

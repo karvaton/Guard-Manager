@@ -2,20 +2,20 @@ import PizZip from "pizzip";
 import Docxtemplater from "docxtemplater";
 import fs from "fs";
 import path from "path";
-import { APP_PATH } from ".";
-
 
 // Load the docx file as binary content
-const content = fs.readFileSync(
-    path.resolve(process.cwd(), "template", "input.docx"),
-    "binary"
-);
+export function getDoc() {
+    const content = fs.readFileSync(
+        path.resolve(process.cwd(), "template", "input.docx"),
+        "binary"
+    );
 
-const zip = new PizZip(content);
-export const doc = new Docxtemplater(zip, {
-    paragraphLoop: true,
-    linebreaks: true,
-});
+    const zip = new PizZip(content);
+    return new Docxtemplater(zip, {
+        paragraphLoop: true,
+        linebreaks: true,
+    });
+}
 
 const ranks = [
     "солд.",

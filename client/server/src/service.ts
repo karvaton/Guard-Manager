@@ -1,7 +1,7 @@
 import path from "path";
 import { findFileByDate, getFiles } from "./utilities";
-import { readFile, writeFile } from "fs/promises";
-import { doc, prepareData } from "./docx-generator";
+import { readFile, readdir, writeFile } from "fs/promises";
+import { getDoc, prepareData } from "./docx-generator";
 
 
 const storePath = path.resolve(process.cwd(), 'store');
@@ -26,13 +26,26 @@ class Service {
         const filepath = path.resolve(storePath, date + '.txt');
         const text = data.join('\r\n');
         await writeFile(filepath, text, { flag: 'w', encoding: 'utf-8' });
-        const preparedData = prepareData(date, data);
-        doc.render(preparedData);
-        const buf = doc.getZip().generate({
-            type: "nodebuffer",
-            compression: "DEFLATE",
-        });
-        return buf;
+    }
+    
+    async getReport(date: string) {
+        const data = await this.getData(date);
+
+        if (data) {
+            const preparedData = prepareData(date, data);
+            const doc = getDoc();
+            doc.render(preparedData);
+            const buf = doc.getZip().generate({
+                type: "nodebuffer",
+                compression: "DEFLATE",
+            });
+            return buf;
+        }
+    }
+
+    async getTemplates() {
+        const pathname = path.resolve(process.cwd(), "template");
+        return await readdir(pathname);
     }
 
     private getFileByDate(date: string) {

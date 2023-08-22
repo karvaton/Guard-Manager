@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import './options.css';
-import * as api from '../postStatement/api';
+import api from '../postStatement/api';
 
 interface OptionsProps {
     onLoad: Function;
+    onShift: Function;
+    onClear: Function;
 }
 
 const beforeToday = new Date(Date.now() - 1000*60*60*24*2).toISOString().substring(0, 10);
 
-export default function Options({ onLoad }: OptionsProps) {
+export default function Options({ onLoad, onShift, onClear }: OptionsProps) {
     const [date, setDate] = useState<string>(beforeToday);
     const [active, setActive] = useState<boolean>(false);
     const [id, setId] = useState<number>(0);
@@ -56,6 +58,14 @@ export default function Options({ onLoad }: OptionsProps) {
                 ) : (
                     <button onClick={() => setActive(true)}>Завантажити дані</button>
                 )}
+            </div>
+
+            <div className="shift-option">
+                <button onClick={() => onShift()}>Змістити зміни</button>
+            </div>
+
+            <div className="clear-option">
+                <button onClick={() => onClear()}>Очистити</button>
             </div>
         </div>
     )

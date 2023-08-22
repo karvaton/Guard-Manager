@@ -1,3 +1,8 @@
+.post-statement {
+    display: flex;
+    flex-direction: column;
+}
+
 .post-statement ul {
     max-width: 300px;
     display: flex;
@@ -34,6 +39,7 @@ div.guardian_field input {
     width: 100px;
     padding: 10px;
     margin-bottom: 20px;
+    align-self: center;
 }
 
 select.veapon {
