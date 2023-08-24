@@ -9,15 +9,18 @@ import Modal from '../modal/Modal';
 import Options from '../options/Options';
 
 
+const mode = process.env.REACT_APP_MODE;
+
 const today = new Date().toISOString().substring(0, 10);
 
 function PostStatement() {
+    const sendMessage: (event: string, args: any) => Promise<string[]> = (window as any).electron.ipcRenderer.invoke;
     const [squad, setSquad] = useState(Array(22).fill(''));
     const [id, setId] = useState<number>(0);
     const [date, setDate] = useState<string>(today);
     const [saving, setSaving] = useState<boolean>(false);
     const [saved, setSaved] = useState<string>('');
-    const [choosingTemplate, setCchoosingTemplate] = useState<boolean>(false);
+    const [choosingTemplate, setChoosingTemplate] = useState<boolean>(false);
 
     function setMember(index: number) {
         return function (newValue: string) {
@@ -57,7 +60,7 @@ function PostStatement() {
                 </div>
 
                 <Options 
-                    onLoad={({id, squad, date: optionDate}: {id: number, squad: string[], isExist: boolean, date: string}) => {
+                    onLoad={({id, squad, date: optionDate}: {id: number, squad: string[], date: string}) => {
                         const daysPast = (new Date(date).getTime() - new Date(optionDate).getTime())/(3600*24*1000);
                         setId(id + daysPast*5);
                         setSquad(squad);
@@ -125,7 +128,7 @@ function PostStatement() {
                         <div className='buttons'>
                             <button className="yes" onClick={() => {
                                 setSaving(false);
-                                api.save(date, [id, ...squad])
+                                api.save(date, [id, ...squad]);
                                 setSaved(date+id+JSON.stringify(squad));
                             }}>Так</button>
                             <button className="no" onClick={() => setSaving(false)}>Ні</button>

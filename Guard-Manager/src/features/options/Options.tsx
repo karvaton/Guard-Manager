@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import './options.css';
 import api from '../postStatement/api';
 
+
 interface OptionsProps {
     onLoad: Function;
     onShift: Function;
@@ -17,17 +18,20 @@ export default function Options({ onLoad, onShift, onClear }: OptionsProps) {
     const [squad, setSquad] = useState<string[]>();
     const [isExist, setIsExist] = useState<boolean>(false);
 
+    async function load() {
+        const shortDate = date.replaceAll('-', '');
+        const res = await api.getData(shortDate);
+        const id = res.slice(0, 1);
+        const data  = res.slice(1);
+        const squad = Array(22 - data.length).fill('');
+        setIsExist(!!res.length);
+        setSquad(data.concat(squad));
+        setId(+id || 0);
+    }
+
     useEffect(() => {
         if (active) {
-            api.getData(date.replaceAll('-', ''))
-                .then(res => {
-                    setIsExist(!!res.length);
-                    const id = res.slice(0, 1);
-                    const data  = res.slice(1);
-                    const squad = Array(22 - data.length).fill('');
-                    setSquad(data.concat(squad));
-                    setId(+id || 0);
-                });
+            load();
         }
     }, [date, active]);
 
@@ -47,7 +51,7 @@ export default function Options({ onLoad, onShift, onClear }: OptionsProps) {
                         <button 
                             disabled={!isExist}
                             onClick={() => {
-                                onLoad({ id, squad, isExist, date });
+                                onLoad({ id, squad, date });
                                 setActive(false);
                             }}
                         >

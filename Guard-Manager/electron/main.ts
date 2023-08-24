@@ -1,6 +1,8 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 import isDev from 'electron-is-dev';
+import './api';
+
 
 function createWindow() {
     const win = new BrowserWindow({
@@ -8,7 +10,8 @@ function createWindow() {
         height: 600,
         webPreferences: {
             nodeIntegration: true,
-            contextIsolation: false,
+            contextIsolation: true,
+            preload: path.join(__dirname, 'preload.js')
         },
     });
 
