@@ -24,7 +24,6 @@ const electronHandler = {
         invoke(channel: Channels, ...args: unknown[]) {
             return ipcRenderer.invoke(channel, ...args);
         },
-        BACKEND_PORT: process.env.REACT_APP_BACKEND_URL,
     },
 };
 

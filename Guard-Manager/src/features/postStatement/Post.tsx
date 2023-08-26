@@ -5,13 +5,15 @@ interface PostProps {
     postNumber: number;
     guardians: string[];
     onChange: (index: number) => (newValue: string) => void;
+    onReplace: (index: number) => void;
+    onDrag: (start: number | null) => void;
 }
 
-const Post = memo(function ({postNumber, guardians, onChange}: PostProps) {
+const Post = memo(function ({postNumber, guardians, onChange, onReplace, onDrag }: PostProps) {
     return(
         <li className="post" key={postNumber}>
-            <p>{postNumber + 1}</p>
-            <ul>
+            <p>{postNumber + 1} пост</p>
+            <ol>
                 {guardians.map((guardian, shift) => (
                     <Guardian
                         key={shift}
@@ -19,9 +21,12 @@ const Post = memo(function ({postNumber, guardians, onChange}: PostProps) {
                         onChange={onChange(postNumber*3 + shift + 4)}
                         position={`${shift + 1}`}
                         veaponOption
+                        id={(postNumber*3+ shift) + 4}
+                        onReplace={onReplace}
+                        onDrag={onDrag}
                     />
                 ))}
-            </ul>
+            </ol>
         </li>
     )
 });

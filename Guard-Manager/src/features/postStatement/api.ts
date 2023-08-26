@@ -1,5 +1,3 @@
-import apiLocal from './api/api.local';
-
 const MODE = process.env.REACT_APP_MODE;
 
 interface IApi {
@@ -10,11 +8,11 @@ interface IApi {
 
 let Api: IApi;
 
-if (MODE !== 'web') {
+if (MODE === 'web') {
     const { getData, save, getReport } = require('./api/api.server');
     Api = { getData, save, getReport };
 } else {
-    const { getData, save, getReport } = require('./api/api.local');
+    const { getData, save, getReport } = require('./api/api.local').default;
     Api = { getData, save, getReport };
 }
 

@@ -1,4 +1,5 @@
-import { memo } from "react";
+import { memo, useEffect, useRef, useState } from "react";
+import dragImg from '../../icons/drag.png';
 
 const ranks = [
     "солд.",
@@ -22,14 +23,18 @@ const veapons = [
     "АКС-74У",
 ]
 
-interface PostProps {
+interface GuardianProps {
+    id: number;
     guardian: string;
     onChange: (value: string) => void;
     position: string;
     veaponOption?: boolean;
+    onReplace: (index: number) => void;
+    onDrag: (start: number | null) => void;
+    // onDragEnter: (start: number) => void;
 }
 
-const Guardian = memo(function ({ guardian, onChange, position, veaponOption }: PostProps) {
+const Guardian = memo(function ({ guardian, id, onChange, position, veaponOption, onReplace, onDrag }: GuardianProps) {
     const [rank, name='', veapon='0'] = guardian.split('-');
 
     function setValue(rank: number, name: string, veapon: number) {
@@ -40,8 +45,30 @@ const Guardian = memo(function ({ guardian, onChange, position, veaponOption }: 
         }
     }
 
-    return(
-        <li key={position} className="guardian">
+    function startDragging(e: React.DragEvent<HTMLLIElement>) {
+        onDrag(id);
+        // setDragging(true);
+    }
+    
+    function drop(e: React.DragEvent<HTMLLIElement>) {
+        onDrag(null);
+        // setDragging(false);
+    }
+    
+    function dragEnter(e: React.DragEvent<HTMLLIElement>) {
+        onReplace(id);
+        onDrag(id);
+    }
+
+    return (
+        <li
+            key={position} 
+            className="guardian"
+            draggable
+            onDragEnter={dragEnter}
+            onDragStart={startDragging}
+            onDragEnd={drop}
+        >
             <p>{position}</p>
             <div className="guardian guardian_field">
                 <select 
@@ -71,9 +98,12 @@ const Guardian = memo(function ({ guardian, onChange, position, veaponOption }: 
                         )}
                     </select>
                 ) : null}
+                    </div>
+            <div className="drag_img">
+                <img src={dragImg} alt="" draggable={false} />
             </div>
         </li>
-    )
+    );
 });
 
 export default Guardian;

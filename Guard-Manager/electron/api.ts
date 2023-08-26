@@ -1,5 +1,5 @@
 import { ipcMain } from "electron";
-import service from '../api/service';
+import service from '../server/src/service';
 
 
 ipcMain.handle('getData', (event, date) => service.getData(date));

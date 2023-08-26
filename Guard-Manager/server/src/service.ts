@@ -30,7 +30,7 @@ class Service {
     
     async getReport(date: string) {
         const data = await this.getData(date);
-
+        
         if (data) {
             const preparedData = prepareData(date, data);
             const doc = getDoc();

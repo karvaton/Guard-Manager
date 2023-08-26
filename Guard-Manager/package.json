@@ -2,6 +2,10 @@
   "name": "guard-manager",
   "version": "1.0.0",
   "description": "Guard manager - app for making post report",
+  "author": {
+    "name": "karvaton",
+    "email": "karvaton.work@gmail.com"
+  },
   "private": true,
   "main": "build/electron/main.js",
   "dependencies": {
@@ -25,7 +29,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "electron-forge start",
+    "start:forge": "electron-forge start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -33,8 +38,8 @@
     "electron:dev": "concurrently \"cross-env BROWSER=none REACT_APP_MODE=desktop npx craco start\" \"wait-on http://127.0.0.1:3000 && tsc -p electron -w\" \"wait-on http://127.0.0.1:3000 && tsc -p electron && electron .\"",
     "electron:build": "npm run build && tsc -p electron && electron-builder",
     "server:dev": "nodemon",
-    "server:build": "tsc -p server -w",
-    "server": "node server/build/index.js",
+    "server:build": "tsc -p server",
+    "server": "node build/server/index.js",
     "package": "electron-forge package",
     "make": "electron-forge make"
   },

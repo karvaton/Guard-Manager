@@ -1,47 +1,76 @@
-.post-statement {
+.squad {
     display: flex;
     flex-direction: column;
+    padding-left: 20px;
+    width: 500px;
 }
 
-.post-statement ul {
-    max-width: 300px;
+.leaders {
+    width: 400px;
+}
+.leaders li {
+    width: 100%;
+}
+
+.squad ol, 
+.squad ul {
+    list-style: none;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    list-style-type: none;
+    padding: 0;
 }
 
-.post-statement ul li {
+.squad li {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    margin: 4px 0;
+    /* width: 400px; */
+    /* width: 100%; */
 }
 
-.post-statement ul li > p {
-    flex: 1;
-    text-align: left;
-    margin: 0;
+.squad li p {
+    min-width: 50px;
 }
 
-div.guardian_field {
-    width: 200px;
+.guardian {
+    height: 46px;
+    margin: 4px;
+}
+
+div.guardian {
     display: flex;
+    /* width: 400px; */
 }
 
-div.guardian_field input {
+div.guardian input {
+    flex: 1;
     padding: 10px;
     font-size: 12pt;
 }
 
-.post-statement > button {
-    width: 100px;
-    padding: 10px;
-    margin-bottom: 20px;
-    align-self: center;
+.veapon {
+    margin-left: 10px;
 }
 
-select.veapon {
-    margin-left: 5px;
+.leaders > li > p,
+.post > li > p {
+    flex: 1;
+}
+
+.post {
+    border-bottom: solid 1px gray;
+    padding: 5px;
+}
+.post:last-of-type {
+    border-bottom: none;
+}
+
+.drag_img img {
+    max-height: 20px;
+    max-width: 20px;
+}
+
+.guardian.guardian_dragging * {
+    display: none;
 }

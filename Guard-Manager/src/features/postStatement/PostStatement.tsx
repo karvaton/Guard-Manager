@@ -9,23 +9,31 @@ import Modal from '../modal/Modal';
 import Options from '../options/Options';
 
 
-const mode = process.env.REACT_APP_MODE;
-
 const today = new Date().toISOString().substring(0, 10);
 
 function PostStatement() {
-    const sendMessage: (event: string, args: any) => Promise<string[]> = (window as any).electron.ipcRenderer.invoke;
     const [squad, setSquad] = useState(Array(22).fill(''));
     const [id, setId] = useState<number>(0);
     const [date, setDate] = useState<string>(today);
     const [saving, setSaving] = useState<boolean>(false);
     const [saved, setSaved] = useState<string>('');
-    const [choosingTemplate, setChoosingTemplate] = useState<boolean>(false);
+    const [dragging, setDragging] = useState<null | number>(null);
+    // const [choosingTemplate, setChoosingTemplate] = useState<boolean>(false);
 
     function setMember(index: number) {
         return function (newValue: string) {
             const list = squad.map((value, i) => i === index ? newValue : value);
             setSquad(list);
+        }
+    }
+
+    function replace(index: number) {
+        if (dragging !== null) {
+            const guardian = squad[dragging];
+            const guardians = squad.slice();
+            guardians.splice(dragging, 1);
+            guardians.splice(index, 0, guardian);
+            setSquad(guardians);
         }
     }
     
@@ -79,6 +87,7 @@ function PostStatement() {
 
                 />
             </div>
+            <div className="squad">
             <ul className="leaders">
                 {leaders.map((guardian, index) => (
                     <Guardian
@@ -86,19 +95,25 @@ function PostStatement() {
                         guardian={guardian}
                         onChange={setMember(index)}
                         position={definePosition(index)}
+                        id={index}
+                        onReplace={replace}
+                        onDrag={setDragging}
                     />
                 ))}
             </ul>
-            <ul className="squad">
+            <ol className="guardians">
                 {guardPosts.map((post, postNumber) => (
                     <Post
                         key={postNumber}
                         postNumber={postNumber}
                         guardians={post}
                         onChange={setMember}
+                        onReplace={replace}
+                        onDrag={setDragging}
                     />
                 ))}
-            </ul>
+            </ol>
+            </div>
             
             {!saved || saved !== date+id+JSON.stringify(squad) ? (
                 <button 
@@ -115,7 +130,7 @@ function PostStatement() {
                 </button>
             ) : (
                 <button 
-                    onClick={() => api.getReport(date)}
+                    onClick={() => api.getReport(date.replaceAll('-', ''))}
                     id='generate'
                 >
                     Згенерувати відомість
